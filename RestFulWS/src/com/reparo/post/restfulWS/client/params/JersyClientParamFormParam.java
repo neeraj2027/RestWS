@@ -18,7 +18,7 @@ public class JersyClientParamFormParam {
 	public static void main(String[] args) {
 		
 		Form form = new Form();
-		form.param("id", "10");
+		form.param("id", "10" );
 		form.param("name", "Neeraj");
 		form.param("profession", "Analyst");
 		

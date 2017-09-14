@@ -11,7 +11,6 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
-import com.owlike.genson.ext.jaxrs.GensonJsonConverter;
 
 @SuppressWarnings("deprecation")
 public class JersyClientJSON {
