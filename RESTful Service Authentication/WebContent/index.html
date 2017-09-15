@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>Enter some text in the fields below, then press the "Submit form" button to submit the form.</p>
+
+<form id="myForm" action="">
+  Username: <input type="text" name="username"><br>
+  Password: <input type="text" name="password"><br><br>
+  <input type="button" onclick="CallWebAPI()" value="Submit form">
+</form>
+
+<div id="response">
+
+</div>
+<script>
+function myFunction() {
+    document.getElementById("myForm").submit();
+}
+
+function authenticateUser(user, password)
+{
+    var token = user + ":" + password;
+
+    // Should i be encoding this value????? does it matter???
+    // Base64 Encoding -> btoa
+    var hash = btoa(token); 
+
+    return "Basic " + hash;
+}
+
+function CallWebAPI() {
+	
+	 var user = document.forms["myForm"]["username"].value;
+	 var pass = document.forms["myForm"]["password"].value;
+    // New XMLHTTPRequest
+    var request = new XMLHttpRequest();
+    request.open("POST", "http://localhost:9090/RESTful_Service_Authentication/rest/helloworld", false);
+    request.setRequestHeader("Authorization", authenticateUser(user, pass));  
+    request.send();
+    // view request status
+    response.innerHTML = request.responseText;
+    if(request.status == 200)
+		alert(request.responseText);
+    else{
+    	alert("Invalid Username or Password");
+    }
+   	//	 myFunction();
+}
+
+</script>
+
+</body>
+</html>
