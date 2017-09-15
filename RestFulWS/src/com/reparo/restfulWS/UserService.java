@@ -2,6 +2,7 @@ package com.reparo.restfulWS;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -10,8 +11,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 @Path("/UserService")
 public class UserService {  
@@ -74,7 +78,6 @@ public class UserService {
         return Response.status(201).entity(result).build(); 
     }
     
-//------------------------------------------------------------------------------------------------------------------------
     @GET
 	@Path("/{varX}/{varY}/{varZ}")
 	@Produces({ "application/xml", "application/json" })
@@ -111,7 +114,61 @@ public class UserService {
 	        System.out.println("profession: " + profession);
 
 	}
-    
+//------------------------------------------------------------------------------------------------------------------------
+    //URL:= http://localhost:9090/RestFulWS/rest/UserService/cars/BMW/320;color=black
+	@GET
+	@Path("/cars/{brand}/{model}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getCars(@PathParam("brand") String brand, @PathParam("model") PathSegment car) {
+
+		String model = car.getPath();
+		String color = car.getMatrixParameters().getFirst("color");
+
+		System.out.println("brand: " + brand);
+		System.out.println("model: " + model);
+		System.out.println("color: " + color);
+
+		return Response.ok().build();
+	}
+	
+	//http://localhost:9090/RestFulWS/rest/UserService/cars/BMW/E92;color=black/M3;maker=john/2015
+	@GET
+    @Path("/cars/{brand}/{model: .+}/{year}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCars(@PathParam("brand") String brand,
+                            @PathParam("model") List<PathSegment> cars,
+                            @PathParam("year") Integer year){
+
+        System.out.println("brand: " + brand);
+        for (PathSegment segment : cars){
+            System.out.println("model: " + segment.getPath());
+            for (String name : segment.getMatrixParameters().keySet()){
+                String value = segment.getMatrixParameters().getFirst(name);
+                System.out.println("\tmatrix param name: " + name + " value: " + value);
+            }
+        }
+        System.out.println("year: " + year);
+
+        return Response.ok().build();
+    }
+	
+	
+	@GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrders(@Context UriInfo info){
+
+        PathSegment model = info.getPathSegments().get(1);
+        System.out.println("id: " + model.getPath());
+        for (String name : model.getMatrixParameters().keySet()){
+            String value = model.getMatrixParameters().getFirst(name);
+            System.out.println("\tmatrix param name: " + name + " value: " + value);
+        }
+
+        return Response.ok().build();
+    }
+	
+	
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
